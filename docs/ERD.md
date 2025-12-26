@@ -1,4 +1,4 @@
-# 🔐 1️⃣ AUTH SERVICE — Identity Database (PostgreSQL)
+git # 🔐 1️⃣ AUTH SERVICE — Identity Database (PostgreSQL)
 
 ## ERD
 
