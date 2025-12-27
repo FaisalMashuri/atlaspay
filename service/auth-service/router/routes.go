@@ -23,5 +23,5 @@ func NewRoutes(params RouteParams, app *fiber.App) IRoutes {
 }
 
 func (routes *routes) Init() {
-	routes.app.Get("/register", routes.ctrl.Register)
+	routes.app.Post("/register", routes.ctrl.Register)
 }

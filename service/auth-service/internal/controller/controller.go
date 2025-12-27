@@ -4,6 +4,7 @@ import (
 	"auth_service/internal/model/dto/requests"
 	"auth_service/internal/model/dto/responses"
 	"auth_service/internal/service"
+	"auth_service/internal/validation"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -22,12 +23,13 @@ func NewController(svc service.IService) IController {
 }
 
 func (c *controller) Register(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{
-		"message": "success",
-	})
 	var reqData requests.RegisterRequest
 	if err := ctx.BodyParser(&reqData); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+	errs := validation.Validate(reqData)
+	if len(errs) > 0 {
+		return responses.Error(ctx, 400, "0400", "Error validation", errs)
 	}
 	err := c.svc.Register(ctx.Context(), reqData)
 	if err != nil {

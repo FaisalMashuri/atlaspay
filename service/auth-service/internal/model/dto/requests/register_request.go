@@ -8,8 +8,8 @@ import (
 )
 
 type RegisterRequest struct {
-	Email    string `form:"email" json:"email" binding:"required,email"`
-	Password string `form:"password" json:"password" binding:"required,min=8,max=20"`
+	Email    string `form:"email" json:"email" validate:"required,email"`
+	Password string `form:"password" json:"password" validate:"required,min=8,max=20"`
 }
 
 func (req *RegisterRequest) ToModelNewUser() (model.User, error) {

@@ -10,6 +10,7 @@ import (
 	"auth_service/middleware"
 	"auth_service/router"
 	"context"
+	"fmt"
 	"github.com/gofiber/contrib/otelfiber/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -19,16 +20,24 @@ import (
 )
 
 func Run(ctx context.Context) error {
+	configData, errLoadConfig := config.LoadConfig()
+	if errLoadConfig != nil {
+		log.Fatal(errLoadConfig)
+	}
+	configData.Print()
+
 	// 1️⃣ Init Logger
 	logInstance := logger.InitLogger()
 	logMiddleware := middleware.NewLogMiddleware(logInstance)
 
 	// 2️⃣ Init OpenTelemetry
-	shutdownOtel, err := logger.InitOtel(ctx)
-	if err != nil {
-		return err
+	if configData.Application.Environment == "production" {
+		shutdownOtel, err := logger.InitOtel(ctx)
+		if err != nil {
+			return err
+		}
+		defer shutdownOtel(ctx)
 	}
-	defer shutdownOtel(ctx)
 
 	// 3️⃣ Setup Fiber
 	app := fiber.New(fiber.Config{})
@@ -39,11 +48,6 @@ func Run(ctx context.Context) error {
 
 	app.Use(logMiddleware.Start())
 	app.Use(recover.New())
-
-	configData, errLoadConfig := config.LoadConfig()
-	if errLoadConfig != nil {
-		log.Fatal(errLoadConfig)
-	}
 
 	db, errConnectDatabase := database.ConnectDatabase(configData.Database)
 	if errConnectDatabase != nil {
@@ -69,7 +73,7 @@ func Run(ctx context.Context) error {
 
 	go func() {
 		log.Println("fiber listening on :3029")
-		if err := app.Listen(":3029"); err != nil {
+		if err := app.Listen(fmt.Sprintf(":%d", configData.Application.Port)); err != nil {
 			errCh <- err
 		}
 	}()
