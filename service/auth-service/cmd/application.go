@@ -55,7 +55,7 @@ func Run(ctx context.Context) error {
 	}
 	txManager := database.NewTxManager(db)
 	repo := repository.NewRepository(db)
-	svc := service.NewService(repo, *txManager)
+	svc := service.NewService(repo, txManager)
 	ctrl := controller.NewController(svc)
 
 	routes := router.NewRoutes(router.RouteParams{

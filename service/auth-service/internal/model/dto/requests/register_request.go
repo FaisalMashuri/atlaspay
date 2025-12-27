@@ -2,6 +2,7 @@ package requests
 
 import (
 	"auth_service/internal/model"
+	"errors"
 	"github.com/oklog/ulid/v2"
 	"golang.org/x/crypto/bcrypt"
 	"time"
@@ -13,6 +14,9 @@ type RegisterRequest struct {
 }
 
 func (req *RegisterRequest) ToModelNewUser() (model.User, error) {
+	if req.Email == "" || req.Password == "" {
+		return model.User{}, errors.New("email or password is empty")
+	}
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return model.User{}, err

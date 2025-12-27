@@ -3,3 +3,48 @@
 
 // Package mocks is a generated GoMock package.
 package mocks
+
+import (
+	database "auth_service/infrastructure/database"
+	context "context"
+	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
+)
+
+// MockITxManager is a mock of ITxManager interface.
+type MockITxManager struct {
+	ctrl     *gomock.Controller
+	recorder *MockITxManagerMockRecorder
+}
+
+// MockITxManagerMockRecorder is the mock recorder for MockITxManager.
+type MockITxManagerMockRecorder struct {
+	mock *MockITxManager
+}
+
+// NewMockITxManager creates a new mock instance.
+func NewMockITxManager(ctrl *gomock.Controller) *MockITxManager {
+	mock := &MockITxManager{ctrl: ctrl}
+	mock.recorder = &MockITxManagerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockITxManager) EXPECT() *MockITxManagerMockRecorder {
+	return m.recorder
+}
+
+// WithTransaction mocks base method.
+func (m *MockITxManager) WithTransaction(ctx context.Context, fn func(database.Executor) error) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "WithTransaction", ctx, fn)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WithTransaction indicates an expected call of WithTransaction.
+func (mr *MockITxManagerMockRecorder) WithTransaction(ctx, fn interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WithTransaction", reflect.TypeOf((*MockITxManager)(nil).WithTransaction), ctx, fn)
+}

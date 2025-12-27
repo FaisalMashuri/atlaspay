@@ -8,11 +8,11 @@ import (
 )
 
 type service struct {
-	tx   database.TxManager
+	tx   database.ITxManager
 	repo repository.IRepository
 }
 
-func NewService(repo repository.IRepository, tx database.TxManager) IService {
+func NewService(repo repository.IRepository, tx database.ITxManager) IService {
 	return &service{
 		repo: repo,
 		tx:   tx,
