@@ -12,7 +12,7 @@ type BaseResponse struct {
 type ErrorBody struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
-	Details any    `json:"detail"`
+	Details any    `json:"detail,omitempty"`
 }
 
 func Success(c *fiber.Ctx, status int, data any, meta any) error {

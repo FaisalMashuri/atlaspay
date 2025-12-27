@@ -2,19 +2,19 @@ package database
 
 import (
 	"context"
-	"database/sql"
+	"github.com/jmoiron/sqlx"
 )
 
 type TxManager struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewTxManager(db *sql.DB) *TxManager {
+func NewTxManager(db *sqlx.DB) *TxManager {
 	return &TxManager{db: db}
 }
 
 func (m *TxManager) WithTransaction(ctx context.Context, fn func(exec Executor) error) error {
-	tx, err := m.db.BeginTx(ctx, nil)
+	tx, err := m.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return err
 	}

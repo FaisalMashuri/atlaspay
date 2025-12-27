@@ -1,8 +1,14 @@
 package cmd
 
 import (
+	"auth_service/config"
+	"auth_service/infrastructure/database"
+	"auth_service/internal/controller"
+	"auth_service/internal/repository"
+	"auth_service/internal/service"
 	"auth_service/logger"
 	"auth_service/middleware"
+	"auth_service/router"
 	"context"
 	"github.com/gofiber/contrib/otelfiber/v2"
 	"github.com/gofiber/fiber/v2"
@@ -33,6 +39,25 @@ func Run(ctx context.Context) error {
 
 	app.Use(logMiddleware.Start())
 	app.Use(recover.New())
+
+	configData, errLoadConfig := config.LoadConfig()
+	if errLoadConfig != nil {
+		log.Fatal(errLoadConfig)
+	}
+
+	db, errConnectDatabase := database.ConnectDatabase(configData.Database)
+	if errConnectDatabase != nil {
+		log.Fatal(errConnectDatabase)
+	}
+	txManager := database.NewTxManager(db)
+	repo := repository.NewRepository(db)
+	svc := service.NewService(repo, *txManager)
+	ctrl := controller.NewController(svc)
+
+	routes := router.NewRoutes(router.RouteParams{
+		AuthController: ctrl,
+	}, app)
+	routes.Init()
 
 	// 4️⃣ Routes
 	app.Get("/", func(c *fiber.Ctx) error {

@@ -2,9 +2,9 @@ package repository
 
 import (
 	"auth_service/infrastructure/database"
+	"auth_service/internal/model"
 	"context"
 	"github.com/jmoiron/sqlx"
-	"os/user"
 )
 
 type repository struct {
@@ -17,7 +17,7 @@ func NewRepository(db *sqlx.DB) IRepository {
 	}
 }
 
-func (repo *repository) CreateUser(ctx context.Context, exec database.Executor, user *user.User) error {
+func (repo *repository) CreateUser(ctx context.Context, exec database.Executor, user *model.User) error {
 	query := `INSERT INTO USERS (created_at, updated_at, user_ref, email, password_hash, status) 
 		VALUES 
 		(:created_at, :updated_at, :user_ref, :email, :password, :status);`

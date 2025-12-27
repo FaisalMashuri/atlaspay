@@ -8,9 +8,11 @@ import (
 )
 
 type Config struct {
+	Application AppConfig
+	Database    DatabaseConfig
 }
 
-func LoadConfig() (*Config, error) {
+func LoadConfig() (Config, error) {
 	if os.Getenv("APP_ENV") != "production" {
 		_ = godotenv.Load()
 	}
@@ -34,15 +36,15 @@ func LoadConfig() (*Config, error) {
 
 	var cfg Config
 	if err := v.Unmarshal(&cfg); err != nil {
-		return nil, err
+		return Config{}, err
 	}
 
 	validate(&cfg)
-	return &cfg, nil
+	return cfg, nil
 }
 
 func validate(cfg *Config) {
-	if cfg.Database.DSN == "" {
-		panic("DATABASE_DSN is required")
+	if cfg.Database.Host == "" || cfg.Database.Port == 0 || cfg.Database.User == "" || cfg.Database.Password == "" {
+		panic("Config database is required")
 	}
 }

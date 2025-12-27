@@ -2,10 +2,10 @@ package repository
 
 import (
 	"auth_service/infrastructure/database"
+	"auth_service/internal/model"
 	"context"
-	"os/user"
 )
 
 type IRepository interface {
-	CreateUser(ctx context.Context, exec database.Executor, user *user.User) error
+	CreateUser(ctx context.Context, exec database.Executor, user *model.User) error
 }

@@ -2,7 +2,7 @@ package config
 
 import "time"
 
-type Application struct {
+type AppConfig struct {
 	Port            int           `mapstructure:"server_port"`
 	Environment     string        `mapstructure:"app_env"` // dev | staging | prod
 	LogLevel        string        `mapstructure:"app_log_level"`
